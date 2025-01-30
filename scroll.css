@@ -139,6 +139,10 @@
 
     h2 {
       --font-level: 6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
   }
   main {
@@ -243,17 +247,28 @@
     color-scheme: dark only;
   }
 
+  /* Fluid typography scaling based on viewport width */
   :where(.fluid) {
+    /* Calculate minimum font size using modular scale (base * ratio^level) */
     --fluid-min: calc(
       var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0))
     );
+    
+    /* Calculate maximum font size using modular scale */
     --fluid-max: calc(
       var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0))
     );
+
+    /* Calculate the rate of scaling between min and max viewport widths */
     --fluid-preferred: calc(
       (var(--fluid-max) - var(--fluid-min)) /
         (var(--font-width-max) - var(--font-width-min))
     );
+
+    /* Create smooth scaling between min and max using CSS clamp:
+       - Minimum: Convert min font size to rems
+       - Preferred: Linear interpolation based on viewport width
+       - Maximum: Convert max font size to rems */
     --fluid-type: clamp(
       (var(--fluid-min) / 16) * 1rem,
       ((var(--fluid-min) / 16) * 1rem) -
@@ -261,6 +276,8 @@
         (var(--fluid-preferred) * var(--variable-unit, 100vi)),
       (var(--fluid-max) / 16) * 1rem
     );
+
+    /* Apply the calculated fluid font size */
     font-size: var(--fluid-type);
   }
 
